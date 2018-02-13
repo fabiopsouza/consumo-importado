@@ -10,6 +10,10 @@ export class FuelModalPage {
   constructor(public navCtrl: NavController,
     public viewCtrl: ViewController) {}
 
+  save() {
+    console.log('teste');
+  }
+
   dismiss() {
     this.viewCtrl.dismiss();
   }
