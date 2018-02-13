@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+
+import { ModalController } from 'ionic-angular';
+
+import { FuelModalPage } from '../fuel-modal/fuel-modal';
 
 @Component({
   selector: 'page-home',
@@ -7,8 +10,10 @@ import { NavController } from 'ionic-angular';
 })
 export class HomePage {
 
-  constructor(public navCtrl: NavController) {
+  constructor(public modalCtrl: ModalController) {}
 
+  openFuelModal(){
+    let modal = this.modalCtrl.create(FuelModalPage);
+    modal.present();
   }
-
 }
