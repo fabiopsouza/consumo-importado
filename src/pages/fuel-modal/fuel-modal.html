@@ -14,23 +14,32 @@
 
 <ion-content padding>
   
-  <ion-list>
-    <ion-item>
-      <ion-label floating>Consumo em Km/100L</ion-label>
-      <ion-input #focusInput type="number"></ion-input>
-    </ion-item>
-    
-    <ion-item>
-      <ion-label floating>Consumo em Km/L</ion-label>
-      <ion-input type="number"></ion-input>
-    </ion-item>
-    
-    <ion-item>
-      <button ion-button full large icon-right (click)="save()">
-        Salvar
-        <ion-icon name="md-archive"></ion-icon>
-      </button>
-    </ion-item>
-  </ion-list>
+  <form [formGroup]="formGroup">
+    <ion-list>
+
+      <ion-item>
+        <ion-label floating>Consumo em Km/100L</ion-label>
+        <ion-input #focusInput formControlName="km100L" type="number"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="km100L?.hasError('required') && km100L.touched">
+        <p>Campo obrigatório</p>
+      </ion-item>
+      
+      <ion-item>
+        <ion-label floating>Consumo em Km/L</ion-label>
+        <ion-input type="number" formControlName="kmL" required></ion-input>
+      </ion-item>
+      <ion-item *ngIf="kmL?.hasError('required') && kmL.touched">
+        <p>Campo obrigatório</p>
+      </ion-item>
+      
+      <ion-item>
+        <button ion-button full large icon-right (click)="save()">
+          Salvar
+          <ion-icon name="md-archive"></ion-icon>
+        </button>
+      </ion-item>
+    </ion-list>
+  </form>
 
 </ion-content>
