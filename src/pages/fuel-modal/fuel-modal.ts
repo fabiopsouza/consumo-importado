@@ -3,6 +3,10 @@ import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/fo
 
 import { NavController, ViewController } from 'ionic-angular';
 
+import { FuelProvider } from '../../providers/fuel/fuel';
+
+import { Fuel } from '../../model/Fuel';
+
 @Component({
   selector: 'page-fuel-modal',
   templateUrl: 'fuel-modal.html',
@@ -17,7 +21,8 @@ export class FuelModalPage {
 
   constructor(public navCtrl: NavController,
     public viewCtrl: ViewController,
-    public formBuilder: FormBuilder) {
+    public formBuilder: FormBuilder,
+    private provider: FuelProvider) {
     this.buildForm();  
   }
 
@@ -31,6 +36,12 @@ export class FuelModalPage {
 
   ngAfterViewInit() {
     //this.km100LInput.setFocus();
+    let fuel = new Fuel();
+    fuel.date = new Date();
+    fuel.kml = 3;
+    fuel.km100l = 3;
+
+    this.provider.save(fuel);
   }
 
   buildForm(){

@@ -22,7 +22,7 @@
         <ion-input #focusInput formControlName="km100L" type="number"></ion-input>
       </ion-item>
       <ion-item *ngIf="km100L?.hasError('required') && km100L.touched">
-        <p>Campo obrigatório</p>
+        <p class="error">Campo obrigatório</p>
       </ion-item>
       
       <ion-item>
@@ -30,11 +30,11 @@
         <ion-input type="number" formControlName="kmL" required></ion-input>
       </ion-item>
       <ion-item *ngIf="kmL?.hasError('required') && kmL.touched">
-        <p>Campo obrigatório</p>
+        <p class="error">Campo obrigatório</p>
       </ion-item>
       
       <ion-item>
-        <button ion-button full large icon-right (click)="save()">
+        <button ion-button full large icon-right (click)="save()" [disabled]="!formGroup.valid">
           Salvar
           <ion-icon name="md-archive"></ion-icon>
         </button>

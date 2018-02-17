@@ -1,6 +1,6 @@
 {
   "name": "consumo-importado",
-  "app_id": "",
+  "app_id": "9eef0ace",
   "type": "ionic-angular",
   "integrations": {
     "cordova": {}

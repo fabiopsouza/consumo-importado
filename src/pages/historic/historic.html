@@ -8,4 +8,40 @@
 
 <ion-content padding>
 
+  <ion-list>
+    <ion-item-sliding *ngFor="let fuel of fuels">
+      <ion-item>
+        <ion-grid>
+          <ion-row>
+            <ion-col col-7>
+              <ion-icon name="ios-arrow-up" *ngIf="fuel.indicator == 1" style="color:green" item-start></ion-icon>
+              <ion-icon name="md-pause" *ngIf="fuel.indicator == 0" style="color:black" item-start></ion-icon>
+              <ion-icon name="ios-arrow-down" *ngIf="fuel.indicator == -1" style="color:red" item-start></ion-icon>
+              {{ fuel.date | date: 'dd/MM/yyyy' }}
+            </ion-col>
+            <ion-col col-3>
+              <ion-row>
+                <ion-col>
+                  {{ fuel.kml }} Km/L
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  {{ fuel.km100l }} Km/100L
+                </ion-col>
+              </ion-row>
+            </ion-col>
+          </ion-row>
+
+        </ion-grid>
+      </ion-item>
+      <ion-item-options side="right">
+        <button ion-button color="danger">
+          <ion-icon name="md-trash"></ion-icon>
+          Excluir
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
 </ion-content>
