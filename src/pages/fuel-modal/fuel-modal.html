@@ -1,5 +1,5 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-title>
       Combustível
     </ion-title>
@@ -19,7 +19,7 @@
 
       <ion-item>
         <ion-label floating>Consumo em Km/100L</ion-label>
-        <ion-input #focusInput formControlName="km100L" type="number"></ion-input>
+        <ion-input #focusInput [(ngModel)]="fuel.km100l" formControlName="km100L" (keyup)="km100LKeyUp()" type="number"></ion-input>
       </ion-item>
       <ion-item *ngIf="km100L?.hasError('required') && km100L.touched">
         <p class="error">Campo obrigatório</p>
@@ -27,7 +27,7 @@
       
       <ion-item>
         <ion-label floating>Consumo em Km/L</ion-label>
-        <ion-input type="number" formControlName="kmL" required></ion-input>
+        <ion-input [(ngModel)]="fuel.kml" formControlName="kmL" (keyup)="kmLKeyUp()" type="number"></ion-input>
       </ion-item>
       <ion-item *ngIf="kmL?.hasError('required') && kmL.touched">
         <p class="error">Campo obrigatório</p>

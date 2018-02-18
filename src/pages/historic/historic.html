@@ -1,8 +1,13 @@
 <ion-header>
-  <ion-navbar>
+  <ion-navbar color="primary">
     <ion-title>
       Histórico
     </ion-title>
+    <ion-buttons end>
+      <button ion-button icon-only (click)="presentPopover()">
+        <ion-icon name="md-settings"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 </ion-header>
 
@@ -22,7 +27,7 @@
             <ion-col col-3>
               <ion-row>
                 <ion-col>
-                  {{ fuel.kml }} Km/L
+                  <b>{{ fuel.kml }} Km/L</b>
                 </ion-col>
               </ion-row>
               <ion-row>
@@ -36,7 +41,7 @@
         </ion-grid>
       </ion-item>
       <ion-item-options side="right">
-        <button ion-button color="danger">
+        <button ion-button color="danger" (click)="remove(fuel.id)">
           <ion-icon name="md-trash"></ion-icon>
           Excluir
         </button>

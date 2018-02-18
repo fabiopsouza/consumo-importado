@@ -11,6 +11,7 @@ import { HistoricPage } from '../pages/historic/historic';
 import { FuelModalPage } from '../pages/fuel-modal/fuel-modal';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
+import { HistoricPopoverPage } from '../pages/historic-popover/historic-popover';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -22,7 +23,8 @@ import { FuelProvider } from '../providers/fuel/fuel';
     HistoricPage,
     HomePage,
     TabsPage,
-    FuelModalPage
+    FuelModalPage,
+    HistoricPopoverPage
   ],
   imports: [
     BrowserModule,
@@ -35,7 +37,8 @@ import { FuelProvider } from '../providers/fuel/fuel';
     HistoricPage,
     HomePage,
     TabsPage,
-    FuelModalPage
+    FuelModalPage,
+    HistoricPopoverPage
   ],
   providers: [
     StatusBar,
