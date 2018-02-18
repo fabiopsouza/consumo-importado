@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, AlertController, PopoverController } from 'ionic-angular';
+import { NavController, AlertController, PopoverController, LoadingController } from 'ionic-angular';
 
 import { Fuel } from '../../model/Fuel';
 import { FuelProvider } from '../../providers/fuel/fuel';
@@ -13,15 +13,18 @@ export class HistoricPage {
 
   fuels: Array<Fuel> = new Array<Fuel>();
   fuelRemovedSubscription;
+  fuelAllRemovedSubscription;
+  loading;
 
   constructor(public navCtrl: NavController, 
-    private provider: FuelProvider,
+    public provider: FuelProvider,
     public alertCtrl: AlertController,
-    public popoverCtrl: PopoverController) {  }
+    public popoverCtrl: PopoverController,
+    public loadingCtrl: LoadingController) {  }
 
-  presentPopover() {
+  presentPopover(event) {
     let popover = this.popoverCtrl.create(HistoricPopoverPage);
-    popover.present();
+    popover.present({ ev: event });
   }
 
   remove(id: string){
@@ -29,16 +32,8 @@ export class HistoricPage {
       title: 'Confirmação',
       message: 'Tem certeza que deseja excluir o consumo?',
       buttons: [
-        {
-          text: 'Cancelar',
-          handler: () => {}
-        },
-        {
-          text: 'Sim',
-          handler: () => {
-            this.provider.remove(id);
-          }
-        }
+        { text: 'Cancelar' },
+        { text: 'Sim', handler: () => { this.provider.remove(id); } }
       ]
     });
     confirm.present();
@@ -56,12 +51,20 @@ export class HistoricPage {
   }
 
   ionViewWillEnter(){
+    this.loading = this.loadingCtrl.create({
+      content: 'Por favor, aguarde...'
+    });
     this.fuelRemovedSubscription = this.provider.fuelRemovedEvent.subscribe(() => {
+      this.getFuels();
+    });
+    this.fuelAllRemovedSubscription = this.provider.fuelAllRemovedEvent.subscribe(() => {
+      this.loading.dismiss();
       this.getFuels();
     });
   }
 
   ionViewWillLeave(){
     this.fuelRemovedSubscription.unsubscribe();
+    this.fuelAllRemovedSubscription.unsubscribe();
   }
 }

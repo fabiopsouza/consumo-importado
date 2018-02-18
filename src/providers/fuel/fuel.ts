@@ -12,6 +12,7 @@ export class FuelProvider {
 
   fuelCreatedEvent = new EventEmitter();
   fuelRemovedEvent = new EventEmitter();
+  fuelAllRemovedEvent = new EventEmitter();
 
   constructor(private storage: Storage, private datepipe: DatePipe) { }
 
@@ -25,7 +26,7 @@ export class FuelProvider {
       	  fuel.indicator = 0;
       	}
       	else {
-      	  let last = fuels[fuels.length - 1];
+          let last = fuels[fuels.length - 1];
       	  if (fuel.kml == last.kml) fuel.indicator = 0;
       	  else if (fuel.kml > last.kml) fuel.indicator = 1;
       	  else fuel.indicator = -1;
@@ -52,6 +53,11 @@ export class FuelProvider {
   remove(id: string){
     this.storage.remove(id);
     this.fuelRemovedEvent.emit();
+  }
+
+  removeAll() {
+    this.storage.clear();
+    this.fuelAllRemovedEvent.emit();
   }
 
   private generateKey(): string{

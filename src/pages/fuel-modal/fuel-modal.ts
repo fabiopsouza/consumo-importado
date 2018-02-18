@@ -1,7 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 
-import { NavController, ViewController } from 'ionic-angular';
+import { NavController, ViewController, LoadingController } from 'ionic-angular';
 import { ToastController } from 'ionic-angular';
 
 import { FuelProvider } from '../../providers/fuel/fuel';
@@ -23,16 +23,24 @@ export class FuelModalPage {
   fuel: Fuel = new Fuel();
 
   fuelCreatedSubscription;
+  loading;
 
   constructor(public navCtrl: NavController,
     public viewCtrl: ViewController,
     public formBuilder: FormBuilder,
     private provider: FuelProvider,
-    private toastCtrl: ToastController) {
+    private toastCtrl: ToastController,
+    public loadingCtrl: LoadingController) {
     this.buildForm();  
   }
 
   save() {
+
+    //Parse number because of a bug in ionic (Issue #7121)
+    this.fuel.kml = +this.fuel.kml;
+    this.fuel.km100l = +this.fuel.km100l;
+
+    this.loading.present();
     this.provider.save(this.fuel);
   }
 
@@ -49,6 +57,11 @@ export class FuelModalPage {
   }
 
   ionViewDidEnter() {
+
+    this.loading = this.loadingCtrl.create({
+      content: 'Por favor, aguarde...'
+    });
+
     setTimeout(() => {
       this.km100LInput.setFocus();
     },150);
@@ -61,6 +74,7 @@ export class FuelModalPage {
         duration: 1000,
         position: 'top'
       });
+      this.loading.dismiss();
       toast.present();
       this.dismiss();
     });
