@@ -1,9 +1,11 @@
-import { Component, ViewChild} from '@angular/core';
+import { Component, ViewChild, ElementRef} from '@angular/core';
+import { DatePipe } from '@angular/common';
 
 import { ModalController } from 'ionic-angular';
 import { Chart } from 'chart.js';
 
 import { FuelModalPage } from '../fuel-modal/fuel-modal';
+import { FuelProvider } from '../../providers/fuel/fuel';
 
 @Component({
   selector: 'page-home',
@@ -11,42 +13,66 @@ import { FuelModalPage } from '../fuel-modal/fuel-modal';
 })
 export class HomePage {
 
-  @ViewChild('lineCanvas') lineCanvas;
-  lineChart: any;
+  @ViewChild('kmlCanvas') kmlCanvas;
+  kmlChart: any;
+
+  @ViewChild('km100lCanvas') km100lCanvas;
+  km100lChart: any;
 
   kmlDates: string[];
   kmlFuels: Number[];
   km100lDates: string[];
   km100lFuels: Number[];
 
-  constructor(public modalCtrl: ModalController) {}
+  constructor(public modalCtrl: ModalController,
+    public provider: FuelProvider,
+    private datepipe: DatePipe) {}
 
   openFuelModal(){
     let modal = this.modalCtrl.create(FuelModalPage);
     modal.present();
   }
 
-  ionViewDidLoad() {
-    
-    //set graph Values
+  ionViewDidEnter() {
+    this.provider.getAll()
+      .then((fuels) => {
 
-    this.buildChart();
+        this.kmlDates = [];
+        this.kmlFuels = [];
+        this.km100lDates = [];
+        this.km100lFuels = [];
+
+        fuels.forEach((fuel) => {
+          this.kmlDates.push(this.getFormattedDate(fuel.date));
+          this.kmlFuels.push(fuel.kml);
+
+          this.km100lDates.push(this.getFormattedDate(fuel.date));
+          this.km100lFuels.push(fuel.km100l);
+        });
+        
+        this.buildChart('Consumo em Km/L', this.kmlChart, this.kmlCanvas, this.kmlDates, this.kmlFuels);
+        this.buildChart('Autonomia em Km/100L', this.km100lChart, this.km100lCanvas, this.km100lDates, this.km100lFuels);
+      });
   }
 
-  buildChart() {
-    this.lineChart = new Chart(this.lineCanvas.nativeElement, {
+  private getFormattedDate(date): string{
+    return this.datepipe.transform(date, "dd/MM/yyyy");
+  }
+
+  buildChart(title, chart, canvas, labels, data) {
+    chart = new Chart(canvas.nativeElement, {
       type: 'line',
       data: {
-        labels: this.kmlDates,
+        labels: labels,
         datasets: [{
-          label: "Consumo em Km/L",
+          label: title,
           fill: false,
           backgroundColor: "#488aff",
           borderColor: "#488aff",
-          data: this.kmlFuels
+          data: data
         }]
       },
-      options: { legend: { onClick: (e) => e.stopPropagation() } }
+      options: { legend: { onClick: (e) => e.stopPropagation() }}
     });
   }
 }

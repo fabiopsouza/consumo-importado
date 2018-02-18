@@ -18,7 +18,7 @@
     <ion-list>
 
       <ion-item>
-        <ion-label floating>Consumo em Km/100L</ion-label>
+        <ion-label floating>Autonomia em Km/100L</ion-label>
         <ion-input #focusInput [(ngModel)]="fuel.km100l" formControlName="km100L" (keyup)="km100LKeyUp()" type="number"></ion-input>
       </ion-item>
       <ion-item *ngIf="km100L?.hasError('required') && km100L.touched">

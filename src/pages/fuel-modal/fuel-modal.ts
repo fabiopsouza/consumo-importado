@@ -36,9 +36,10 @@ export class FuelModalPage {
 
   save() {
 
-    //Parse number because of a bug in ionic (Issue #7121)
+    //Parse to number because of a bug in ionic (Issue #7121)
     this.fuel.kml = +this.fuel.kml;
     this.fuel.km100l = +this.fuel.km100l;
+    this.fuel.date = new Date();
 
     this.loading.present();
     this.provider.save(this.fuel);
