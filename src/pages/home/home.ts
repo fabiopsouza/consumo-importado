@@ -6,12 +6,15 @@ import { Chart } from 'chart.js';
 
 import { FuelModalPage } from '../fuel-modal/fuel-modal';
 import { FuelProvider } from '../../providers/fuel/fuel';
+import { Fuel } from '../../model/Fuel';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
+
+  filter: string;
 
   @ViewChild('kmlCanvas') kmlCanvas;
   kmlChart: any;
@@ -26,7 +29,9 @@ export class HomePage {
 
   constructor(public modalCtrl: ModalController,
     public provider: FuelProvider,
-    private datepipe: DatePipe) {}
+    private datepipe: DatePipe) {
+    this.filter = 'month';
+  }
 
   openFuelModal(){
     let modal = this.modalCtrl.create(FuelModalPage);
@@ -34,7 +39,8 @@ export class HomePage {
   }
 
   ionViewDidEnter() {
-    this.provider.getAll()
+    let noReverse = false;
+    this.provider.getAll(noReverse)
       .then((fuels) => {
 
         this.kmlDates = [];
@@ -74,5 +80,26 @@ export class HomePage {
       },
       options: { legend: { onClick: (e) => e.stopPropagation() }}
     });
+  }
+
+  test() {
+    for(let i = 0; i < 30; i++){
+      let f = new Fuel();
+      f.kml = this.randomNumber();
+      f.km100l = this.randomNumber();
+      f.date = this.randomDate(new Date(2018,0,1), new Date(2018,11,30));
+    
+      console.log(f);
+      this.provider.save(f);
+    }
+  }
+
+  randomNumber(): number {
+    var precision = 100; // 2 decimals
+    return Math.floor(Math.random() * (10 * precision - 1 * precision) + 1 * precision) / (1*precision);
+  }
+
+  randomDate(start, end) {
+    return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
   }
 }

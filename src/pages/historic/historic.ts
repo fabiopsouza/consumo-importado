@@ -40,7 +40,8 @@ export class HistoricPage {
   }
 
   getFuels(){
-    this.provider.getAll()
+    let reverse = true;
+    this.provider.getAll(reverse)
       .then((result) => {
         this.fuels = result;
       });

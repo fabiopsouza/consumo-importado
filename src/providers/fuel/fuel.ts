@@ -17,7 +17,8 @@ export class FuelProvider {
   constructor(private storage: Storage, private datepipe: DatePipe) { }
 
   save(fuel: Fuel) {
-    this.getAll()
+    let reverse = true;
+    this.getAll(reverse)
       .then((fuels) => {
       	fuels = fuels.reverse();
       	fuel.id = this.generateKey();
@@ -37,13 +38,13 @@ export class FuelProvider {
       });
   }
 
-  getAll(){
+  getAll(reverse: boolean){
     let fuels: Array<Fuel> = new Array<Fuel>();
     return this.storage.forEach((fuel: Fuel, key: string, iterationNumber: Number) => {
       fuels.push(fuel);
     })
     .then(() => {
-      return Promise.resolve(fuels.reverse());
+      return Promise.resolve(reverse ? fuels.reverse() : fuels);
     })
     .catch((error) => {
       return Promise.reject(error);

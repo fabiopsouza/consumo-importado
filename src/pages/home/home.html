@@ -6,6 +6,20 @@
 
 <ion-content>
 
+  <div padding-bottom>
+    <ion-segment [(ngModel)]="filter">
+      <ion-segment-button value="year">
+        Ano
+      </ion-segment-button>
+      <ion-segment-button value="month">
+        Mês
+      </ion-segment-button>
+      <ion-segment-button value="week">
+        Semana
+      </ion-segment-button>
+    </ion-segment>
+  </div>
+
   <canvas #kmlCanvas></canvas>
 
   <canvas #km100lCanvas></canvas>
