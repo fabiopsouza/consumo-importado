@@ -7,7 +7,7 @@
 <ion-content>
 
   <div padding-bottom>
-    <ion-segment [(ngModel)]="filter">
+    <ion-segment [(ngModel)]="filter" (ionChange)="onChangeSegment()">
       <ion-segment-button value="year">
         Ano
       </ion-segment-button>
