@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef} from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { DatePipe } from '@angular/common';
 
 import { ModalController } from 'ionic-angular';
@@ -30,6 +30,8 @@ export class HomePage {
   startDate: Date = new Date();
   endDate: Date = new Date();
 
+  fuelCreatedSubscription;
+
   constructor(public modalCtrl: ModalController,
     public provider: FuelProvider,
     private datepipe: DatePipe) {
@@ -37,34 +39,26 @@ export class HomePage {
   }
 
   openFuelModal(){
-    
-    this.testSegment();
-
     let modal = this.modalCtrl.create(FuelModalPage);
-    //modal.present();
+    modal.present();
   }
 
   onChangeSegment(){
     this.buildSegmentedGraph();
   }
 
-  ionViewDidEnter() {
-    this.buildSegmentedGraph();
-  }
-
-  private buildSegmentedGraph(){
-    
+  buildSegmentedGraph(){
     this.setSegmentDates();
 
-    let noReverse = false;
-    this.provider.getAll(noReverse)
+    let reverse = false;
+    this.provider.getAll(reverse)
       .then((fuels) => {
 
         this.kmlDates = [];
         this.kmlFuels = [];
         this.km100lDates = [];
         this.km100lFuels = [];
-
+        
         fuels = this.getFiltred(fuels);
 
         fuels.forEach((fuel) => {
@@ -81,28 +75,33 @@ export class HomePage {
   }
 
   private setSegmentDates(){
+
     let factor;
 
     if('week' == this.filter) factor = 7;
     else if('month' == this.filter) factor = 31;
     else factor = 365;
 
-    this.startDate.setDate(this.endDate.getDate() - factor);
+    var now = new Date();
+    now.setHours(0,0,0,0);
+
+    this.endDate = now;
+    this.startDate = this.subDays(this.endDate, factor);
+
+    this.startDate.setHours(0,0,0,0);
+    this.endDate.setHours(23,59,59,999);
   }
 
   private getFiltred(list: Fuel[]): Fuel[] {
     
     let filtred: Fuel[] = [];
-
+    
     list.forEach((item) => {
-      if(item.date > this.startDate && item.date < this.endDate) filtred.push(item);
+      if(item.date >= this.startDate && item.date <= this.endDate) 
+        filtred.push(item);
     });
 
     return filtred;
-  }
-
-  private getFormattedDate(date): string{
-    return this.datepipe.transform(date, "dd/MM/yyyy");
   }
 
   buildChart(title, chart, canvas, labels, data) {
@@ -122,20 +121,51 @@ export class HomePage {
     });
   }
 
+  private getFormattedDate(date): string{
+    return this.datepipe.transform(date, "dd/MM/yyyy");
+  }
+
+  private subDays(date: Date, days: number){
+    let _24HoursInMilliseconds = 86400000;
+    let subDate = new Date(date.getTime() - (days * _24HoursInMilliseconds));
+    subDate.setHours(0,0,0,0);
+    return subDate;
+  }
+
+  //
+  // LIFE CYCLE
+  
+  ionViewDidEnter() {
+    this.buildSegmentedGraph();
+  }
+
+  ionViewWillEnter(){
+    this.fuelCreatedSubscription = this.provider.fuelCreatedEvent.subscribe(() => {
+      this.buildSegmentedGraph();
+    });
+  }
+
+  ionViewWillLeave(){
+    this.fuelCreatedSubscription.unsubscribe();
+  }
+
   //
   // TESTS
 
   testSegment(){
     //week
     let d1 = new Date(2018, 1, 18);
-    let d2 = new Date(2018, 1, 13);
+    let d2 = new Date(2018, 1, 16);
 
-    let d3 = new Date(2018, 0, 29);
-    let d4 = new Date(2018, 1, 11);
+    //month
+    let d3 = new Date(2018, 0, 31);
+    let d4 = new Date(2018, 1, 15);
 
+    //year
     let d5 = new Date(2017, 4, 23);
     let d6 = new Date(2017, 10, 3);
 
+    //out
     let d7 = new Date(2015, 6, 1);
     let d8 = new Date(2015, 7, 20);
     
@@ -155,7 +185,6 @@ export class HomePage {
     f.km100l = this.randomNumber();
     f.date = date;
   
-    console.log(f);
     this.provider.save(f);
   }
 

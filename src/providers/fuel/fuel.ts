@@ -3,8 +3,6 @@ import { DatePipe } from '@angular/common';
 
 import { Storage } from '@ionic/storage';
 
-import { Observable } from 'rxjs/Observable';
-
 import { Fuel } from '../../model/Fuel';
 
 @Injectable()
@@ -17,12 +15,11 @@ export class FuelProvider {
   constructor(private storage: Storage, private datepipe: DatePipe) { }
 
   save(fuel: Fuel) {
-    let reverse = true;
+    let reverse = false;
     this.getAll(reverse)
       .then((fuels) => {
-      	fuels = fuels.reverse();
       	fuel.id = this.generateKey();
-      
+
       	if(fuels.length == 0) {
       	  fuel.indicator = 0;
       	}
@@ -30,11 +27,12 @@ export class FuelProvider {
           let last = fuels[fuels.length - 1];
       	  if (fuel.kml == last.kml) fuel.indicator = 0;
       	  else if (fuel.kml > last.kml) fuel.indicator = 1;
-      	  else fuel.indicator = -1;
+          else fuel.indicator = -1;
       	}
       	
-        this.storage.set(fuel.id, fuel);
-      	this.fuelCreatedEvent.emit();
+        this.storage.set(fuel.id, fuel).then(() => {
+          this.fuelCreatedEvent.emit();
+        });
       });
   }
 
